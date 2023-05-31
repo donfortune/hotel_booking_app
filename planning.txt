@@ -1,0 +1,10 @@
+Features:
+user can see a list of hotels
+user can book 
+user gets reservation ticket after booking
+
+
+classes:          #look for nouns in your features
+user
+hotels
+reservationticket
