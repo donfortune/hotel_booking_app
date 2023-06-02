@@ -37,7 +37,13 @@ class ReservationTicket:
 
 
     def get_reserve_ticket(self):
-       content = f"Mr {self.client_name} has booked {self.hotel.name}  in  {self.hotel.city} city successfully"
+       content = f"""
+                Thank you for your reservation!!
+                Your Booking Details:
+                Name : Mr {self.client_name}     
+                Hotel :{self.hotel.name} 
+                City : {self.hotel.city} 
+                 """
        return content
 
 print(data)
