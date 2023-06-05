@@ -46,15 +46,38 @@ class ReservationTicket:
                  """
        return content
 
+class CreditCard:
+    def __init__(self, card_number, expiration_date, holder_name, cvc):
+        self.card_number = card_number
+        self.expiration_date = expiration_date
+        self.holder_name = holder_name
+        self.cvc = cvc
+    
+    def validate(self):
+        return True
+
+
+
+        
+
+
 print(data)
 
 hotel_ID = input('Enter Id of hotel:')
 hotel = Hotel(hotel_ID)
 if hotel.available():
-    hotel.book()
-    name = input('Enter your name:')
-    reservation_ticket = ReservationTicket(client_name=name, hotel_obj=hotel)
-    print(reservation_ticket.get_reserve_ticket())
+    card_number = input('enter your card number')
+    expiration_date = input('enter expiration date')
+    holder_name = input('Enter holders name')
+    cvc = input('Enter your cvc no')
+    credit_card = CreditCard(card_number, expiration_date, holder_name, cvc)
+    if credit_card.validate():
+        hotel.book()
+        name = input('Enter your name:')
+        reservation_ticket = ReservationTicket(client_name=name, hotel_obj=hotel)
+        print(reservation_ticket.get_reserve_ticket())
+    else:
+        print('There was a problem with your card')
     
 else:
     print('Hotel is fully Booked')
