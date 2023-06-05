@@ -59,6 +59,15 @@ class CreditCard:
             return True
         else:
             return False
+        
+class SecureCreditCard:
+    def __init__(self, password):
+        self.password = password
+    
+    def card_password(self):
+        return self.password
+        
+    
 
 
 
@@ -76,6 +85,11 @@ if hotel.available():
     cvc = input('Enter your cvc no:')
     credit_card = CreditCard(card_number, expiration_date, holder_name, cvc)
     if credit_card.validate():
+        #password = input('Enter your card password: ')
+        #SecureCreditCard.card_password(password)
+        password = input('Enter your card password: ')
+        secure_card = SecureCreditCard(password)
+        secure_card.card_password()
         hotel.book()
         name = input('Enter your name:')
         reservation_ticket = ReservationTicket(client_name=name, hotel_obj=hotel)
