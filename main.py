@@ -54,7 +54,11 @@ class CreditCard:
         self.cvc = cvc
     
     def validate(self):
-        return True
+        if self.card_number.isdigit()  and self.expiration_date.isdigit() and self.cvc.isdigit() and self.holder_name:
+
+            return True
+        else:
+            return False
 
 
 
@@ -66,10 +70,10 @@ print(data)
 hotel_ID = input('Enter Id of hotel:')
 hotel = Hotel(hotel_ID)
 if hotel.available():
-    card_number = input('enter your card number')
-    expiration_date = input('enter expiration date')
-    holder_name = input('Enter holders name')
-    cvc = input('Enter your cvc no')
+    card_number = input('enter your card number:')
+    expiration_date = input('enter expiration date:')
+    holder_name = input('Enter holders name:')
+    cvc = input('Enter your cvc no:')
     credit_card = CreditCard(card_number, expiration_date, holder_name, cvc)
     if credit_card.validate():
         hotel.book()
