@@ -1,114 +1,90 @@
-import pandas as pd
+import pandas
 
-data = pd.read_csv('hotels.csv', dtype={'id': str}) #make sure your string type 'id' is treated as a string not int
-data_cards = pd.read_csv('card-security.csv', dtype={'id': str})
-
-class User:
-    def view_hotel(self):
-        pass
+data = pandas.read_csv("hotels.csv", dtype={"id": str})
+data_cards = pandas.read_csv("cards.csv", dtype=str).to_dict(orient="records")
+data_cards_security = pandas.read_csv("card-security.csv", dtype=str)
 
 class Hotel:
     def __init__(self, hotel_id):
         self.hotel_id = hotel_id
-        self.name = data.loc[data['id'] == self.hotel_id, "name"].squeeze()
-        self.city = data.loc[data['id'] == self.hotel_id, "city"].squeeze()
+        self.name = data.loc[data["id"] == self.hotel_id, "name"].squeeze()
 
+    def book(self):
+        """Book a hotel by changing its availability to no"""
+        data.loc[data["id"] == self.hotel_id, "available"] = "no"
+        data.to_csv("hotels.csv", index=False)
 
-    def available(self):    #checks if there are free rooms in the hotel 
-        availability = data.loc[data['id'] == self.hotel_id, "available"].squeeze()
+    def available(self):
+        """Check if the hotel is available"""
+        availability = data.loc[data["id"] == self.hotel_id, "available"].squeeze()
         if availability == "yes":
             return True
         else:
             return False
-        
 
-    def book(self):   #books rooms by changing availability to no
-        availability = data.loc[data['id'] == self.hotel_id, "available"].squeeze()
-        if availability == "no":
-            data.to_csv('hotels.csv', index=False)
-        #data.loc[data['id'] == self.hotel_id, "available"] = 'no' 
-        #data.to_csv('hotels.csv', index=False)
-        
 
 class ReservationTicket:
-    def __init__(self, client_name, hotel_obj):
-        self.client_name = client_name
-        self.hotel = hotel_obj
-       
+    def __init__(self, customer_name, hotel_object):
+        self.customer_name = customer_name
+        self.hotel = hotel_object
 
+    def generate(self):
+        content = f"""
+        Thank you for your reservation!
+        Here are you booking data:
+        Name: {self.customer_name}
+        Hotel name: {self.hotel.name}
+        """
+        return content
 
-    def get_reserve_ticket(self):
-       content = f"""
-                Thank you for your reservation!!
-                Your Booking Details:
-                Name : Mr {self.client_name}     
-                Hotel :{self.hotel.name} 
-                City : {self.hotel.city} 
-                 """
-       return content
 
 class CreditCard:
-    def __init__(self, card_number, expiration_date, holder_name, cvc):
-        self.card_number = card_number
-        self.expiration_date = expiration_date
-        self.holder_name = holder_name
-        self.cvc = cvc
-    
-    def validate(self):
-        if self.card_number.isdigit()  and self.expiration_date.isdigit() and self.cvc.isdigit() and self.holder_name:
+    def __init__(self, number):
+        self.number = number
 
+    def validate(self, expiration, holder, cvc):
+        card_data = {"number": self.number, "expiration": expiration,
+                     "holder": holder, "cvc": cvc}
+        if card_data in data_cards:
+            return True
+        else:
+            return False
+
+
+class SecureCreditCard(CreditCard):
+    def authenticate(self, given_password):
+        password = data_cards_security.loc[data_cards_security["number"] == self.number, "password"].squeeze()
+        if password == given_password:
             return True
         else:
             return False
         
-class SecureCreditCard(CreditCard):   #inheritance
-    
-    def authenticate(self, given_password):
-        password = data_cards.loc[data_cards['number'] == self.card_number, "password"].squeeze()
-        if password == given_password:
-            return True
-        else:
-            return False 
+class SpaReservation():
+    def book_spa(self):
+        pass
 
-
-    
-        
-    
-
-
-
-        
 
 
 print(data)
-
-hotel_ID = input('Enter Id of hotel:')
+hotel_ID = input("Enter the id of the hotel: ")
 hotel = Hotel(hotel_ID)
+
 if hotel.available():
-    card_number = input('enter your card number:')
-    expiration_date = input('enter expiration date:')
-    holder_name = input('Enter holders name:')
-    cvc = input('Enter your cvc no:')
-    credit_card = SecureCreditCard(card_number, expiration_date, holder_name, cvc)
-    if credit_card.validate():
-        #password = input('Enter your card password: ')
-        #SecureCreditCard.card_password(password)
-        #password = input('Enter your card password: ')
-        secure_card = SecureCreditCard()
-        secure_card.authenticate()
+    credit_card = SecureCreditCard(number="1234567890123456")
+    if credit_card.validate(expiration="12/26", holder="JOHN SMITH", cvc="123"):
         if credit_card.authenticate(given_password="mypass"):
             hotel.book()
-            name = input('Enter your name:')
-            reservation_ticket = ReservationTicket(client_name=name, hotel_obj=hotel)
-            print(reservation_ticket.get_reserve_ticket())
+            name = input("Enter your name: ")
+            reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
+            print(reservation_ticket.generate())
         else:
-            print('Credit card authentication failed.')
+            print("Credit card authentication failed.")
     else:
-        print('There was a problem with your card')
-    
+        print("There was a problem with your payment")
+    spa_request = input('Do you want a Spa Reservation:')
+    if spa_request == 'yes':
+        print('Thank you for booking your spa session')
+    else:
+        print('Enjoy your stay here!')
 else:
-    print('Hotel is fully Booked')
-    
-    
-
-
+    print("Hotel is not free.")
