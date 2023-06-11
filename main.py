@@ -51,7 +51,7 @@ class CreditCard:
             return False
 
 
-class SecureCreditCard(CreditCard):
+class SecureCreditCard(CreditCard):   #inheritance
     def authenticate(self, given_password):
         password = data_cards_security.loc[data_cards_security["number"] == self.number, "password"].squeeze()
         if password == given_password:
