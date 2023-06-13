@@ -10,12 +10,12 @@ class Hotel:
         self.name = data.loc[data["id"] == self.hotel_id, "name"].squeeze()
 
     def book(self):
-        """Book a hotel by changing its availability to no"""
+        
         data.loc[data["id"] == self.hotel_id, "available"] = "no"
         data.to_csv("hotels.csv", index=False)
 
     def available(self):
-        """Check if the hotel is available"""
+      
         availability = data.loc[data["id"] == self.hotel_id, "available"].squeeze()
         if availability == "yes":
             return True
